@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: boardgame
-          image: punittak2005cse/devproject:latest # Updated to match your Jenkins pipeline build image
+          image: punittak2005cse/javaproject:latest # Updated to match your Jenkins pipeline build image
           imagePullPolicy: Always
           ports:
             - containerPort: 8080 # The port that the container is running on in the cluster
