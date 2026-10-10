@@ -3,6 +3,8 @@ package com.javaproject.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +27,8 @@ import com.javaproject.database.DatabaseAccess;
 
 @Controller
 public class HomeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     private static final String REDIRECT_HOME = "redirect:/";
     private static final String REVIEWS_URL_SUFFIX = "/reviews";
@@ -123,7 +127,7 @@ public class HomeController {
     @PostMapping("/boardgameAdded")
     public String boardgameAdded(@ModelAttribute BoardGame boardgame) {
         Long returnValue = da.addBoardGame(boardgame);
-        System.out.println("return value is: " + returnValue);
+        logger.info("Return value is: {}", returnValue);
         return REDIRECT_HOME;
     }
 
@@ -137,7 +141,7 @@ public class HomeController {
             // if id not exists, add
             returnValue = da.addReview(review);
         }
-        System.out.println("return value is: " + returnValue);
+        logger.info("Return value is: {}", returnValue);
         return REDIRECT_HOME + review.getGameId() +
                 REVIEWS_URL_SUFFIX;
     }
@@ -146,7 +150,7 @@ public class HomeController {
     public String deleteReview(@PathVariable Long id) {
         Long gameId = da.getReview(id).getGameId();
         int returnValue = da.deleteReview(id);
-        System.out.println("return value is: " + returnValue);
+        logger.info("Return value is: {}", returnValue);
         return REDIRECT_HOME + gameId + REVIEWS_URL_SUFFIX;
     }
 
