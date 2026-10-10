@@ -26,6 +26,14 @@ import com.javaproject.database.DatabaseAccess;
 @Controller
 public class HomeController {
 
+    private static final String REDIRECT_HOME = "redirect:/";
+    private static final String REVIEWS_URL_SUFFIX = "/reviews";
+    private static final String VIEW_NEW_USER = "new-user";
+    private static final String VIEW_SECURED_ADD_REVIEW = "secured/addReview";
+    private static final String MODEL_BOARDGAME = "boardgame";
+    private static final String MODEL_REVIEW = "review";
+    private static final String MODEL_AUTHORITIES = "authorities";
+
     @Autowired
     DatabaseAccess da;
 
@@ -40,8 +48,8 @@ public class HomeController {
     public String newUser(Model model) {
 
         List<String> authorities = da.getAuthorities();
-        model.addAttribute("authorities", authorities);
-        return "new-user";
+        model.addAttribute(MODEL_AUTHORITIES, authorities);
+        return VIEW_NEW_USER;
     }
 
     @PostMapping("/addUser")
@@ -58,14 +66,14 @@ public class HomeController {
         // check existing user
         if (jdbcUserDetailsManager.userExists(userName)) {
             model.addAttribute("errorMsg", "User name already Exists. Try a different user name.");
-            model.addAttribute("authorities", authorityList);
-            return "new-user";
+            model.addAttribute(MODEL_AUTHORITIES, authorityList);
+            return VIEW_NEW_USER;
         } else {
             User user = new User(userName, encodedPassword, authorityList);
 
             jdbcUserDetailsManager.createUser(user);
             redirectAttrs.addFlashAttribute("userAddedMsg", "User succesfully added!");
-            return "redirect:/";
+            return REDIRECT_HOME;
         }
     }
 
@@ -78,37 +86,37 @@ public class HomeController {
 
     @GetMapping("/{id}")
     public String getBoardgameDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("boardgame", da.getBoardGame(id));
+        model.addAttribute(MODEL_BOARDGAME, da.getBoardGame(id));
         return "boardgame";
     }
 
     @GetMapping("/{id}/reviews")
     public String getReviews(@PathVariable Long id, Model model) {
-        model.addAttribute("boardgame", da.getBoardGame(id));
+        model.addAttribute(MODEL_BOARDGAME, da.getBoardGame(id));
         model.addAttribute("reviews", da.getReviews(id));
         return "review";
     }
 
     @GetMapping("/secured/addReview/{id}")
     public String addReview(@PathVariable Long id, Model model) {
-        model.addAttribute("boardgame", da.getBoardGame(id));
-        model.addAttribute("review", new Review());
+        model.addAttribute(MODEL_BOARDGAME, da.getBoardGame(id));
+        model.addAttribute(MODEL_REVIEW, new Review());
 
-        return "secured/addReview";
+        return VIEW_SECURED_ADD_REVIEW;
     }
 
     // edit the review
     @GetMapping("/{gameId}/reviews/{id}")
     public String editReview(@PathVariable Long gameId, @PathVariable Long id, Model model) {
         Review review = da.getReview(id);
-        model.addAttribute("review", review);
-        model.addAttribute("boardgame", da.getBoardGame(gameId));
-        return "secured/addReview";
+        model.addAttribute(MODEL_REVIEW, review);
+        model.addAttribute(MODEL_BOARDGAME, da.getBoardGame(gameId));
+        return VIEW_SECURED_ADD_REVIEW;
     }
 
     @GetMapping("/secured/addBoardGame")
     public String addBoardGame(Model model) {
-        model.addAttribute("boardgame", new BoardGame());
+        model.addAttribute(MODEL_BOARDGAME, new BoardGame());
         return "secured/addBoardGame";
     }
 
@@ -116,7 +124,7 @@ public class HomeController {
     public String boardgameAdded(@ModelAttribute BoardGame boardgame) {
         Long returnValue = da.addBoardGame(boardgame);
         System.out.println("return value is: " + returnValue);
-        return "redirect:/";
+        return REDIRECT_HOME;
     }
 
     @PostMapping("/reviewAdded")
@@ -130,8 +138,8 @@ public class HomeController {
             returnValue = da.addReview(review);
         }
         System.out.println("return value is: " + returnValue);
-        return "redirect:/" + review.getGameId() +
-                "/reviews";
+        return REDIRECT_HOME + review.getGameId() +
+                REVIEWS_URL_SUFFIX;
     }
 
     @GetMapping("/deleteReview/{id}")
@@ -139,7 +147,7 @@ public class HomeController {
         Long gameId = da.getReview(id).getGameId();
         int returnValue = da.deleteReview(id);
         System.out.println("return value is: " + returnValue);
-        return "redirect:/" + gameId + "/reviews";
+        return REDIRECT_HOME + gameId + REVIEWS_URL_SUFFIX;
     }
 
     @GetMapping("/user")

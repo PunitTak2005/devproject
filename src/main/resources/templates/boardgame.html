@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/header.html :: html-head(title=|${boardgame.name}|)"></head>
+<head th:replace="fragments/header.html :: html-head(title=|${boardgame.name}|)">
+    <title th:text="|${boardgame.name}|">Board Game Details</title>
+</head>
 
 <body>
     <nav th:replace="fragments/links :: nav.navigation-links"></nav>
