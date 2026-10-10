@@ -17,7 +17,7 @@ pipeline {
                 git(
                     branch: 'main',
                     credentialsId: 'git-cred',
-                    url: 'https://github.com/sunilkumar0633/devproject.git'
+                    url: 'https://github.com/PunitTak2005/devproject.git'
                 )
             }
         }
