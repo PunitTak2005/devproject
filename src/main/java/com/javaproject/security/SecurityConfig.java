@@ -15,6 +15,9 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String ROLE_MANAGER = "MANAGER";
+    private static final String ROLE_USER = "USER";
+
     private LoggingAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
@@ -54,9 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/user/**").hasAnyRole("USER", "MANAGER") // sets up authorization
-                .antMatchers("/secured/**").hasAnyRole("USER", "MANAGER")
-                .antMatchers("/manager/**").hasRole("MANAGER")
+                .antMatchers("/user/**").hasAnyRole(ROLE_USER, ROLE_MANAGER) // sets up authorization
+                .antMatchers("/secured/**").hasAnyRole(ROLE_USER, ROLE_MANAGER)
+                .antMatchers("/manager/**").hasRole(ROLE_MANAGER)
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/", "/**").permitAll() // allows access to index in templates
                 .and() // allows us to chain
@@ -81,9 +84,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withDefaultSchema()
                 .passwordEncoder(passwordEncoder)
                 .withUser("bugs")
-                .password(passwordEncoder.encode("bunny")).roles("USER")
+                .password(passwordEncoder.encode("bunny")).roles(ROLE_USER)
                 .and()
                 .withUser("daffy")
-                .password(passwordEncoder.encode("duck")).roles("USER", "MANAGER");
+                .password(passwordEncoder.encode("duck")).roles(ROLE_USER, ROLE_MANAGER);
     }
 }

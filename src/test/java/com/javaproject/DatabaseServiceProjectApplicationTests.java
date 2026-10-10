@@ -10,5 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class DatabaseServiceProjectApplicationTests {
     @Test
     void contextLoads() {
+        // Test that application context loads successfully
     }
 }

@@ -37,6 +37,7 @@ public class HomeController {
     private static final String MODEL_BOARDGAME = "boardgame";
     private static final String MODEL_REVIEW = "review";
     private static final String MODEL_AUTHORITIES = "authorities";
+    private static final String LOG_RETURN_VALUE = "Return value is: {}";
 
     @Autowired
     DatabaseAccess da;
@@ -91,14 +92,14 @@ public class HomeController {
     @GetMapping("/{id}")
     public String getBoardgameDetail(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_BOARDGAME, da.getBoardGame(id));
-        return "boardgame";
+        return MODEL_BOARDGAME;
     }
 
     @GetMapping("/{id}/reviews")
     public String getReviews(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_BOARDGAME, da.getBoardGame(id));
         model.addAttribute("reviews", da.getReviews(id));
-        return "review";
+        return MODEL_REVIEW;
     }
 
     @GetMapping("/secured/addReview/{id}")
@@ -127,7 +128,7 @@ public class HomeController {
     @PostMapping("/boardgameAdded")
     public String boardgameAdded(@ModelAttribute BoardGame boardgame) {
         Long returnValue = da.addBoardGame(boardgame);
-        logger.info("Return value is: {}", returnValue);
+        logger.info(LOG_RETURN_VALUE, returnValue);
         return REDIRECT_HOME;
     }
 
@@ -141,7 +142,7 @@ public class HomeController {
             // if id not exists, add
             returnValue = da.addReview(review);
         }
-        logger.info("Return value is: {}", returnValue);
+        logger.info(LOG_RETURN_VALUE, returnValue);
         return REDIRECT_HOME + review.getGameId() +
                 REVIEWS_URL_SUFFIX;
     }
@@ -150,7 +151,7 @@ public class HomeController {
     public String deleteReview(@PathVariable Long id) {
         Long gameId = da.getReview(id).getGameId();
         int returnValue = da.deleteReview(id);
-        logger.info("Return value is: {}", returnValue);
+        logger.info(LOG_RETURN_VALUE, returnValue);
         return REDIRECT_HOME + gameId + REVIEWS_URL_SUFFIX;
     }
 
