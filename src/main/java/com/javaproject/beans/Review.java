@@ -13,15 +13,6 @@ public class Review {
     private Long gameId;
     private String text;
 
-    public Review() {
-    }
-
-    public Review(Long id, Long gameId, String text) {
-        this.id = id;
-        this.gameId = gameId;
-        this.text = text;
-    }
-
     public Long getId() {
         return id;
     }
