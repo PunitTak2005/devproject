@@ -27,7 +27,7 @@ pipeline {
                 sh '''
                     echo "Java version:"
                     java -version
-                    mvn compile
+                    mvn clean compile
                 '''
             }
         }
@@ -89,10 +89,10 @@ pipeline {
                             docker build -t ${JOB_NAME}:${BUILD_ID} .
 
                             docker tag ${JOB_NAME}:${BUILD_ID} \
-                                jacksneel/${JOB_NAME}:${BUILD_ID}
+                                punittak2005cse/javaproject:${BUILD_ID}
 
                             docker tag ${JOB_NAME}:${BUILD_ID} \
-                                jacksneel/${JOB_NAME}:latest
+                                punittak2005cse/javaproject:latest
                         """
                     }
                 }
@@ -105,7 +105,7 @@ pipeline {
                     trivy image \
                     --format table \
                     -o trivy-image-report.html \
-                    jacksneel/${JOB_NAME}:${BUILD_ID}
+                    punittak2005cse/javaproject:${BUILD_ID}
                 """
             }
         }
@@ -117,8 +117,8 @@ pipeline {
                         credentialsId: 'docker-cred'
                     ) {
                         sh """
-                            docker push jacksneel/${JOB_NAME}:${BUILD_ID}
-                            docker push jacksneel/${JOB_NAME}:latest
+                            docker push punittak2005cse/javaproject:${BUILD_ID}
+                            docker push punittak2005cse/javaproject:latest
                         """
                     }
                 }
@@ -151,8 +151,8 @@ pipeline {
                         <a href="${BUILD_URL}">${BUILD_URL}</a>
                     </p>
                 """,
-                to: 'sunielmahla@gmail.com',
-                replyTo: 'sunielmahla@gmail.com',
+                to: 'punittak2005@gmail.com',
+                replyTo: 'punittak2005@gmail.com',
                 mimeType: 'text/html'
             )
         }
