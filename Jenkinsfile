@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
+        DOCKER_IMAGE = 'punittak2005cse/javaproject'
     }
 
     stages {
@@ -27,7 +28,7 @@ pipeline {
                 sh '''
                     echo "Java version:"
                     java -version
-                    mvn clean compile
+                    mvn compile
                 '''
             }
         }
@@ -86,13 +87,13 @@ pipeline {
                         credentialsId: 'docker-cred'
                     ) {
                         sh """
-                            docker build -t ${JOB_NAME}:${BUILD_ID} .
+                            docker build -t ${DOCKER_IMAGE}:${BUILD_ID} .
 
-                            docker tag ${JOB_NAME}:${BUILD_ID} \
-                                punittak2005cse/javaproject:${BUILD_ID}
+                            docker tag ${DOCKER_IMAGE}:${BUILD_ID} \
+                                ${DOCKER_IMAGE}:${BUILD_ID}
 
-                            docker tag ${JOB_NAME}:${BUILD_ID} \
-                                punittak2005cse/javaproject:latest
+                            docker tag ${DOCKER_IMAGE}:${BUILD_ID} \
+                                ${DOCKER_IMAGE}:latest
                         """
                     }
                 }
@@ -105,7 +106,7 @@ pipeline {
                     trivy image \
                     --format table \
                     -o trivy-image-report.html \
-                    punittak2005cse/javaproject:${BUILD_ID}
+                    ${DOCKER_IMAGE}:${BUILD_ID}
                 """
             }
         }
@@ -117,8 +118,8 @@ pipeline {
                         credentialsId: 'docker-cred'
                     ) {
                         sh """
-                            docker push punittak2005cse/javaproject:${BUILD_ID}
-                            docker push punittak2005cse/javaproject:latest
+                            docker push ${DOCKER_IMAGE}:${BUILD_ID}
+                            docker push ${DOCKER_IMAGE}:latest
                         """
                     }
                 }
