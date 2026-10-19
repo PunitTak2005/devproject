@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk17'
+        jdk 'jdk21'
         maven 'maven3'
     }
 
@@ -24,7 +24,11 @@ pipeline {
 
         stage('Compile') {
             steps {
-                sh 'mvn compile'
+                sh '''
+                    echo "Java version:"
+                    java -version
+                    mvn compile
+                '''
             }
         }
 
